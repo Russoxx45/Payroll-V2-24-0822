@@ -1,0 +1,148 @@
+import pandas as pd
+
+
+def agregar_empleado(lista_empleados):
+    nombre = input("Digite el nombre y apellido del empleado: ")
+    salario = float(input("Digite el salario mensual: "))
+    dias_laborados = int(input("Digite los días laborados: "))
+    horas_extras = int(input("Digite la cantidad de horas extras: "))
+
+    valor_hora_extra = salario // 30 // 8
+    total_extras = valor_hora_extra * horas_extras
+    total_salario = salario // 30 * dias_laborados
+    total_devengado = salario + total_extras
+    salud = salario * 8 // 100
+    pension = salario * 3.375 // 100
+    sindicato = salario * 2 // 100
+    total_deducido = salud + pension + sindicato
+    neto_a_pagar = total_devengado - total_deducido
+
+    empleado = [
+        nombre, salario, dias_laborados, horas_extras,
+        total_devengado, total_deducido, neto_a_pagar,
+        salud, pension, sindicato, total_salario, total_extras, valor_hora_extra
+    ]
+
+    lista_empleados.append(empleado)
+    print("Empleado agregado exitosamente.")
+
+
+def editar_empleado(lista_empleados):
+    nombre = input("Digite el nombre del empleado que desea editar: ")
+    for empleado in lista_empleados:
+        if empleado[0] == nombre:
+            print("Empleado encontrado. Ingrese los nuevos datos.")
+            salario = float(input("Digite el nuevo salario mensual: "))
+            dias_laborados = int(input("Digite los nuevos días laborados: "))
+            horas_extras = int(
+                input("Digite la nueva cantidad de horas extras: "))
+
+            valor_hora_extra = salario // 30 // 8
+            total_extras = valor_hora_extra * horas_extras
+            total_salario = salario // 30 * dias_laborados
+            total_devengado = salario + total_extras
+            salud = salario * 8 // 100
+            pension = salario * 3.375 // 100
+            sindicato = salario * 2 // 100
+            total_deducido = salud + pension + sindicato
+            neto_a_pagar = total_devengado - total_deducido
+
+            empleado[1] = salario
+            empleado[2] = dias_laborados
+            empleado[3] = horas_extras
+            empleado[4] = total_devengado
+            empleado[5] = total_deducido
+            empleado[6] = neto_a_pagar
+            empleado[7] = salud
+            empleado[8] = pension
+            empleado[9] = sindicato
+            empleado[10] = total_salario
+            empleado[11] = total_extras
+            empleado[12] = valor_hora_extra
+            print("Empleado editado exitosamente.")
+            return
+    print("Empleado no encontrado.")
+
+
+def borrar_empleado(lista_empleados):
+    nombre = input("Digite el nombre del empleado que desea borrar: ")
+    for empleado in lista_empleados:
+        if empleado[0] == nombre:
+            lista_empleados.remove(empleado)
+            print("Empleado borrado exitosamente.")
+            return
+    print("Empleado no encontrado.")
+
+
+def imprimir_empleados(lista_empleados):
+    for empleado in lista_empleados:
+        recibo = f"""
+        --------------------BIENVENIDO----------------------------
+        ----------------------------------------------------------
+        |                                                        |
+        | Nombre:  {empleado[0]}
+        | Salario: {empleado[1]}
+        | Días Laborados: {empleado[2]}
+        ----------------------------------------------------------
+        | Salud: {empleado[7]}
+        | Pensión: {empleado[8]}
+        | Sindicato: {empleado[9]}
+        ----------------------------------------------------------
+        | Total salario: {empleado[10]}
+        | Horas Extras: {empleado[11]}
+        | Valor Horas extras: {empleado[12]}
+        ----------------------------------------------------------
+        | Total Devengado: {empleado[4]}
+        ----------------------------------------------------------
+        | Total Deducido: {empleado[5]}
+        ----------------------------------------------------------
+        | Neto a Pagar: {empleado[6]}
+        ----------------------------------------------------------
+        """
+        print(recibo)
+
+
+def exportar_a_excel(lista_empleados, nombre_archivo):
+    datos = [
+        {
+            "Nombre": emp[0],
+            "Salario": emp[1],
+            "Días Laborados": emp[2],
+            "Horas Extras": emp[3],
+            "Total Devengado": emp[4],
+            "Total Deducido": emp[5],
+            "Neto a Pagar": emp[6]
+        } for emp in lista_empleados
+    ]
+
+    df = pd.DataFrame(datos)
+    df.to_excel(nombre_archivo, index=False)
+    print(f"Datos exportados exitosamente a {nombre_archivo}")
+
+
+def menu():
+    lista_empleados = []
+    while True:
+        print("\n1. Agregar empleado\n2. Editar empleado\n3. Borrar empleado\n4. Imprimir recibos de empleados\n5. Exportar a Excel\n6. Salir")
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "1":
+            agregar_empleado(lista_empleados)
+        elif opcion == "2":
+            editar_empleado(lista_empleados)
+        elif opcion == "3":
+            borrar_empleado(lista_empleados)
+        elif opcion == "4":
+            imprimir_empleados(lista_empleados)
+        elif opcion == "5":
+            nombre_archivo = input(
+                "Digite el nombre del archivo Excel (ej. nomina.xlsx): ")
+            exportar_a_excel(lista_empleados, nombre_archivo)
+        elif opcion == "6":
+            break
+        else:
+            print("Opción no válida. Intente de nuevo.")
+
+
+if __name__ == "__main__":
+    menu()
